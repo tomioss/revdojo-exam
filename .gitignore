@@ -1,0 +1,20 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# misc
+*.pyc
+*.class
+*~
+__pycache__
+.DS_Store
+.idea
+.subl
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+data.csv
+db.sqlite3
+celerybeat-schedule
+*/migrations
+.env
+
