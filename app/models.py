@@ -17,7 +17,7 @@ class Vehicle(models.Model):
     vin = models.CharField(max_length=17)
     stock_number = models.CharField(max_length=10)
     start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    end_date = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
         max_length=3,
         choices=STATUS_CHOICES,
