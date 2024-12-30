@@ -24,7 +24,7 @@ class Vehicle(models.Model):
     )
     vehicle_type = models.CharField(
         max_length=4,
-        choices=STATUS_CHOICES,
+        choices=VEHICLE_TYPE_CHOICES,
     )
     description = models.TextField()
     price = models.FloatField()
