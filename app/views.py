@@ -8,7 +8,14 @@ from app.models import Vehicle, Statistics
 from app.serializers import VehicleSerializer, StatisticsSerializer
 
 
-class VehicleApiView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+class VehicleApiView(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
     permission_classes = (IsAuthenticated,)
     queryset = Vehicle.objects.all().order_by("id")
     serializer_class = VehicleSerializer
@@ -16,7 +23,14 @@ class VehicleApiView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Cr
     filterset_class = VehicleFilter
 
 
-class StatisticsApiView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+class StatisticsApiView(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
     permission_classes = (IsAuthenticated,)
     queryset = Statistics.objects.all().order_by("id")
     serializer_class = StatisticsSerializer
