@@ -42,6 +42,7 @@ class VehicleDetailsFilter(filters.FilterSet):
                 end_date = datetime.strptime(end_date_str, date_format).date()
 
                 stats_qs = Statistics.objects.filter(date__gte=start_date, date__lte=end_date)
+                queryset = queryset.filter(statistics__date__gte=start_date, statistics__date__lte=end_date)
                 return self._get_vehicle_queryset(queryset, stats_qs)
             except ValueError:
                 return queryset.none()
@@ -52,6 +53,7 @@ class VehicleDetailsFilter(filters.FilterSet):
         if value:
             try:
                 stats_qs = Statistics.objects.filter(source=value)
+                queryset = queryset.filter(statistics__source=value)
                 return self._get_vehicle_queryset(queryset, stats_qs)
             except ValueError:
                 return queryset.none()

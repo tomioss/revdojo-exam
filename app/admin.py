@@ -34,7 +34,7 @@ class StatisticsAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
-    readonly_fields=("date", "created_at", "updated_at",)
+    readonly_fields=("created_at", "updated_at",)
 
 
 admin.site.register(Vehicle, VehicleAdmin)

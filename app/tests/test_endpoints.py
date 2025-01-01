@@ -133,3 +133,89 @@ class StatisticsApiViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEquals(Statistics.objects.all().count(), 0)
 
+
+class VehicleDetailsApiViewTest(APITestCase):
+    url = reverse("app:vehicle-details-list")
+
+    def _login_user(self):
+        username = "username"
+        password = "password"
+        create_user(username, password)
+        self.assertTrue(self.client.login(username=username, password=password))
+
+    def setUp(self):
+        now = timezone.now()
+        v1 = create_vehicle("vin1", "stock1", now, None, Vehicle.ON_SALE, Vehicle.NEW)
+        s1 = create_statistics(now.date(), "src10", 10, 11, v1)
+        s2 = create_statistics(now.date(), "src11", 12, 13, v1)
+        v2 = create_vehicle("vin2", "stock2", now, None, Vehicle.ON_SALE, Vehicle.USED)
+        create_statistics(now.date(), "src2", 20, 21, v2)
+        create_vehicle("vin3", "stock3", now, now, Vehicle.SOLD, Vehicle.USED)
+
+        self._login_user()
+
+    def test_list_all(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(data["count"], 2)
+
+    def test_list_vin(self):
+        params = {
+            "vin": "vin1"
+        }
+        response = self.client.get(self.url, params)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(data["count"], 1)
+        self.assertEqual(data["results"][0]["vin"], "vin1")
+
+    def test_list_stock_number(self):
+        params = {
+            "stock_number": "stock2"
+        }
+        response = self.client.get(self.url, params)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(data["count"], 1)
+        self.assertEqual(data["results"][0]["vin"], "vin2")
+
+    def test_list_vehicle_type(self):
+        params = {
+            "vehicle_type": Vehicle.NEW
+        }
+        response = self.client.get(self.url, params)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(data["count"], 1)
+        self.assertEqual(data["results"][0]["vin"], "vin1")
+
+    def test_list_date_range(self):
+        now = str(timezone.now().date())
+        params = {
+            "date_range": f"{now},{now}"
+        }
+        response = self.client.get(self.url, params)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(len(data["results"]), 2)
+        self.assertEqual(data["results"][0]["vin"], "vin1")
+        self.assertEqual(len(data["results"][0]["source"]), 2)
+
+    def test_list_source(self):
+        params = {
+            "source": "src10"
+        }
+        response = self.client.get(self.url, params)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(len(data["results"]), 1)
+        self.assertEqual(data["results"][0]["vin"], "vin1")
+        self.assertEqual(len(data["results"][0]["source"]), 1)
+
