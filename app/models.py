@@ -34,7 +34,7 @@ class Vehicle(models.Model):
 
 
 class Statistics(models.Model):
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
     source = models.CharField(max_length=255)
     vdp_count = models.IntegerField()
     srp_count = models.IntegerField()
