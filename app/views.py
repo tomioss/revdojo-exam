@@ -1,3 +1,6 @@
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
+
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import mixins, viewsets
@@ -36,8 +39,14 @@ class StatisticsApiView(
 
 class VehicleDetailsApiView(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = (IsAuthenticated,)
-    queryset = Vehicle.objects.filter(status=Vehicle.ON_SALE).order_by("id")
     serializer_class = VehicleDetailsSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = VehicleDetailsFilter
+
+    def get_queryset(self):
+        qs = Vehicle.objects.filter(status=Vehicle.ON_SALE).annotate(
+            total_vdp_count=Coalesce(Sum("statistics__vdp_count"), 0),
+            total_srp_count=Coalesce(Sum("statistics__srp_count"), 0)
+        ).order_by("id")
+        return qs
 

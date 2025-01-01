@@ -17,7 +17,17 @@ class StatisticsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class SourceStatisticsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Statistics
+        fields = ("source",)
+
+
 class VehicleDetailsSerializer(serializers.ModelSerializer):
+    total_vdp_count = serializers.IntegerField()
+    total_srp_count = serializers.IntegerField()
+    source = SourceStatisticsSerializer(source="statistics_set", many=True)
 
     class Meta:
         model = Vehicle
@@ -29,5 +39,8 @@ class VehicleDetailsSerializer(serializers.ModelSerializer):
             "description",
             "price",
             "photos_count",
+            "total_vdp_count",
+            "total_srp_count",
+            "source",
         )
 

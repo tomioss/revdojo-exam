@@ -19,12 +19,14 @@ class VehicleAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
+    readonly_fields=("created_at", "updated_at",)
 
 
 class StatisticsAdmin(admin.ModelAdmin):
     model = Statistics
     list_display = (
         "id",
+        "date",
         "source",
         "vdp_count",
         "srp_count",
@@ -32,6 +34,7 @@ class StatisticsAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
+    readonly_fields=("date", "created_at", "updated_at",)
 
 
 admin.site.register(Vehicle, VehicleAdmin)
